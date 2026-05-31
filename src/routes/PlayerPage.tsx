@@ -32,7 +32,7 @@ export function PlayerPage() {
   return <Player project={project} />;
 }
 
-function Player({ project }: { project: Project }) {
+export function Player({ project }: { project: Project }) {
   const runtime = useMemo(() => new Runtime(project), [project]);
   const [, setTick] = useState(0);
   const [state, setState] = useState<RuntimeState>(runtime.state);
@@ -86,7 +86,7 @@ function Player({ project }: { project: Project }) {
   );
 }
 
-function Centered({ children }: { children: React.ReactNode }) {
+export function Centered({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white">
       {children}

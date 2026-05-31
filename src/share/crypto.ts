@@ -69,6 +69,42 @@ export async function encryptJson(value: unknown, password: string): Promise<Enc
   };
 }
 
+/**
+ * Encrypt raw bytes, packing salt(16) + iv(12) + ciphertext into one array.
+ * Used by URL sharing where a compact binary form (no JSON/base64 nesting) keeps
+ * the payload close to the plaintext size.
+ */
+export async function encryptBytes(data: Uint8Array, password: string): Promise<Uint8Array> {
+  const salt = randomBytes(16);
+  const iv = randomBytes(12);
+  const key = await deriveKey(password, salt, PBKDF2_ITERATIONS);
+  const ciphertext = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, toArrayBufferView(data)),
+  );
+  const out = new Uint8Array(salt.length + iv.length + ciphertext.length);
+  out.set(salt, 0);
+  out.set(iv, salt.length);
+  out.set(ciphertext, salt.length + iv.length);
+  return out;
+}
+
+/** Copy into a fresh ArrayBuffer-backed array (satisfies WebCrypto's typing). */
+function toArrayBufferView(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
+  const copy = new Uint8Array(new ArrayBuffer(bytes.length));
+  copy.set(bytes);
+  return copy;
+}
+
+/** Decrypt bytes packed by `encryptBytes`. Throws on wrong password. */
+export async function decryptBytes(packed: Uint8Array, password: string): Promise<Uint8Array> {
+  const salt = toArrayBufferView(packed.slice(0, 16));
+  const iv = toArrayBufferView(packed.slice(16, 28));
+  const ciphertext = toArrayBufferView(packed.slice(28));
+  const key = await deriveKey(password, salt, PBKDF2_ITERATIONS);
+  const plaintext = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+  return new Uint8Array(plaintext);
+}
+
 /** Decrypt a payload. Throws if the password is wrong (AES-GCM auth failure). */
 export async function decryptJson<T = unknown>(
   payload: EncryptedPayload,
