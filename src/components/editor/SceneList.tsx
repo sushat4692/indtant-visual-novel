@@ -34,24 +34,24 @@ export function SceneList({
             <li key={s.id}>
               <div
                 className={`group flex items-center justify-between rounded px-2 py-1.5 text-sm ${
-                  active ? "bg-sky-100 text-sky-900" : "hover:bg-slate-100"
+                  active ? "bg-sky-100 text-sky-900" : "text-slate-800 hover:bg-slate-100"
                 }`}
               >
                 <button onClick={() => onSelect(s.id)} className="min-w-0 flex-1 truncate text-left">
                   {isStart && <span title="開始シーン">▶ </span>}
                   {s.name}
-                  <span className="ml-1 text-xs text-slate-400">({s.id})</span>
+                  <span className="ml-1 text-xs text-slate-500">({s.id})</span>
                 </button>
                 <div className="ml-1 hidden shrink-0 gap-1 group-hover:flex">
                   {!isStart && (
-                    <button onClick={() => onSetStart(s.id)} title="開始シーンにする" className="text-xs text-slate-400 hover:text-emerald-600">
+                    <button onClick={() => onSetStart(s.id)} title="開始シーンにする" className="text-xs text-slate-500 hover:text-emerald-600">
                       開始
                     </button>
                   )}
-                  <button onClick={() => onRename(s.id)} title="名前変更" className="text-xs text-slate-400 hover:text-sky-600">
+                  <button onClick={() => onRename(s.id)} title="名前変更" className="text-xs text-slate-500 hover:text-sky-600">
                     名
                   </button>
-                  <button onClick={() => onDelete(s.id)} title="削除" className="text-xs text-slate-400 hover:text-red-600">
+                  <button onClick={() => onDelete(s.id)} title="削除" className="text-xs text-slate-500 hover:text-red-600">
                     ×
                   </button>
                 </div>

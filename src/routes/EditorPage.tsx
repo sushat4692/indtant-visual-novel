@@ -4,8 +4,7 @@ import { editorRouteApi } from "../router";
 import type { CharacterDef, Orientation, Project } from "../engine/types";
 import { ORIENTATION_LABEL, resolveOrientation } from "../engine/orientation";
 import { getProject, saveProject } from "../storage/projectStore";
-import { listAssets } from "../storage/assetStore";
-import type { StoredAsset } from "../storage/db";
+import { BUILTIN_ASSETS } from "../assets/builtinRegistry";
 import { parseScene } from "../engine/parser";
 import { validateProject } from "../engine/validate";
 import { Runtime } from "../engine/runtime";
@@ -22,7 +21,6 @@ export function EditorPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [activeScene, setActiveScene] = useState<string>("");
   const [cursorLine, setCursorLine] = useState(1);
-  const [uploads, setUploads] = useState<StoredAsset[]>([]);
   const [showExport, setShowExport] = useState(false);
   const [missing, setMissing] = useState(false);
 
@@ -38,7 +36,6 @@ export function EditorPage() {
       setProject(p);
       setActiveScene(p.meta.startScene in p.scenes ? p.meta.startScene : Object.keys(p.scenes)[0] ?? "");
     });
-    listAssets().then(setUploads);
   }, [projectId, navigate]);
 
   // Debounced autosave whenever the project changes.
@@ -113,16 +110,12 @@ export function EditorPage() {
     mutate((p) => ({ ...p, meta: { ...p.meta, characters } }));
   const setOrientation = (orientation: Orientation) =>
     mutate((p) => ({ ...p, meta: { ...p.meta, orientation } }));
-  const onUploaded = (asset: StoredAsset) => {
-    setUploads((u) => [...u, asset]);
-    mutate((p) => ({ ...p, uploadedAssetIds: [...new Set([...p.uploadedAssetIds, asset.id])] }));
-  };
 
   const sceneErrors = scene ? (() => {
     const r = parseScene(scene.script);
     return r.ok ? [] : r.errors;
   })() : [];
-  const knownAssetIds = new Set(uploads.map((u) => u.id));
+  const knownAssetIds = new Set(BUILTIN_ASSETS.map((a) => a.id));
   const projectErrors = validateProject(project, knownAssetIds).filter((e) => e.scene === activeScene);
 
   return (
@@ -133,7 +126,7 @@ export function EditorPage() {
           <input
             value={project.name}
             onChange={(e) => mutate((p) => ({ ...p, name: e.target.value, meta: { ...p.meta, title: e.target.value } }))}
-            className="rounded border border-transparent px-2 py-1 text-sm font-bold hover:border-slate-300 focus:border-sky-500 focus:outline-none"
+            className="rounded border border-transparent px-2 py-1 text-sm font-bold text-slate-800 hover:border-slate-300 focus:border-sky-500 focus:outline-none"
           />
           <OrientationToggle
             value={resolveOrientation(project.meta.orientation)}
@@ -148,7 +141,7 @@ export function EditorPage() {
           >
             再生
           </Link>
-          <button onClick={() => setShowExport(true)} className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
+          <button onClick={() => setShowExport(true)} className="rounded-lg border border-slate-400 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-slate-900">
             エクスポート
           </button>
         </div>
@@ -167,9 +160,9 @@ export function EditorPage() {
             onSetStart={setStart}
           />
           <hr className="border-slate-200" />
-          <CharacterPanel project={project} uploads={uploads} onChange={setCharacters} />
+          <CharacterPanel project={project} onChange={setCharacters} />
           <hr className="border-slate-200" />
-          <AssetPanel uploads={uploads} onUploaded={onUploaded} />
+          <AssetPanel />
         </aside>
 
         {/* Center: script editor */}
@@ -183,7 +176,7 @@ export function EditorPage() {
               completionData={{
                 characterKeys: Object.keys(project.meta.characters),
                 sceneIds: Object.keys(project.scenes),
-                assetIds: uploads.map((u) => u.id),
+                assetIds: BUILTIN_ASSETS.map((a) => a.id),
               }}
             />
           ) : (

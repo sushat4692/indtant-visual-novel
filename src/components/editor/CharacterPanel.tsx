@@ -1,22 +1,16 @@
 import type { CharacterDef, Project } from "../../engine/types";
 import { builtinAssetsByType } from "../../assets/builtinRegistry";
-import type { StoredAsset } from "../../storage/db";
 
 /** Edit the project's character definitions (key, display name, sprite). */
 export function CharacterPanel({
   project,
-  uploads,
   onChange,
 }: {
   project: Project;
-  uploads: StoredAsset[];
   onChange: (characters: Record<string, CharacterDef>) => void;
 }) {
   const chars = project.meta.characters;
-  const spriteOptions = [
-    ...builtinAssetsByType("character").map((a) => ({ id: a.id, label: a.label })),
-    ...uploads.filter((u) => u.type === "character").map((u) => ({ id: u.id, label: u.name })),
-  ];
+  const spriteOptions = builtinAssetsByType("character").map((a) => ({ id: a.id, label: a.label }));
 
   const update = (key: string, patch: Partial<CharacterDef>) => {
     onChange({ ...chars, [key]: { ...chars[key], ...patch } });
@@ -51,30 +45,30 @@ export function CharacterPanel({
         {Object.entries(chars).map(([key, def]) => (
           <div key={key} className="rounded-lg border border-slate-200 p-2 text-xs">
             <div className="mb-1 flex items-center gap-1">
-              <span className="text-slate-400">キー</span>
+              <span className="text-slate-600">キー</span>
               <input
                 defaultValue={key}
                 onBlur={(e) => rename(key, e.target.value.trim())}
-                className="w-20 rounded border border-slate-300 px-1 py-0.5 font-mono"
+                className="w-20 rounded border border-slate-300 px-1 py-0.5 font-mono text-slate-800"
               />
-              <button onClick={() => remove(key)} className="ml-auto text-slate-400 hover:text-red-600">
+              <button onClick={() => remove(key)} className="ml-auto text-slate-500 hover:text-red-600">
                 削除
               </button>
             </div>
             <div className="mb-1 flex items-center gap-1">
-              <span className="text-slate-400">表示名</span>
+              <span className="text-slate-600">表示名</span>
               <input
                 value={def.name}
                 onChange={(e) => update(key, { name: e.target.value })}
-                className="flex-1 rounded border border-slate-300 px-1 py-0.5"
+                className="flex-1 rounded border border-slate-300 px-1 py-0.5 text-slate-800"
               />
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-slate-400">立ち絵</span>
+              <span className="text-slate-600">立ち絵</span>
               <select
                 value={def.sprite}
                 onChange={(e) => update(key, { sprite: e.target.value })}
-                className="flex-1 rounded border border-slate-300 px-1 py-0.5"
+                className="flex-1 rounded border border-slate-300 px-1 py-0.5 text-slate-800"
               >
                 {spriteOptions.map((o) => (
                   <option key={o.id} value={o.id}>
@@ -86,7 +80,7 @@ export function CharacterPanel({
           </div>
         ))}
         {Object.keys(chars).length === 0 && (
-          <p className="text-xs text-slate-400">キャラクター未登録です。</p>
+          <p className="text-xs text-slate-500">キャラクター未登録です。</p>
         )}
       </div>
     </div>
