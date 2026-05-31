@@ -175,7 +175,17 @@ export function EditorPage() {
         {/* Center: script editor */}
         <main className="col-span-5 overflow-hidden rounded-lg bg-white p-3">
           {scene ? (
-            <ScriptEditor value={scene.script} onChange={updateScript} errors={[...sceneErrors, ...projectErrors]} onCursorChange={setCursorLine} />
+            <ScriptEditor
+              value={scene.script}
+              onChange={updateScript}
+              errors={[...sceneErrors, ...projectErrors]}
+              onCursorChange={setCursorLine}
+              completionData={{
+                characterKeys: Object.keys(project.meta.characters),
+                sceneIds: Object.keys(project.scenes),
+                assetIds: uploads.map((u) => u.id),
+              }}
+            />
           ) : (
             <p className="text-slate-400">シーンを選択してください。</p>
           )}
