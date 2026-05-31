@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+/* One-shot stage effects, triggered by toggling a class on the stage. */
+@keyframes vn-shake-kf {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-8px, 4px); }
+  40% { transform: translate(8px, -4px); }
+  60% { transform: translate(-6px, -2px); }
+  80% { transform: translate(6px, 2px); }
+}
+.vn-shake { animation: vn-shake-kf 0.5s ease-in-out; }
+
+@keyframes vn-flash-kf {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(3); }
+  100% { filter: brightness(1); }
+}
+.vn-flash { animation: vn-flash-kf 0.5s ease-out; }
+
+@keyframes vn-fade-kf {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.vn-fade { animation: vn-fade-kf 0.6s ease-in; }
+
+@keyframes vn-fadeout-kf {
+  from { opacity: 1; }
+  to { opacity: 0.15; }
+}
+.vn-fadeout { animation: vn-fadeout-kf 0.6s ease-out forwards; }
