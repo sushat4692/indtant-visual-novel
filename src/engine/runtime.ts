@@ -28,6 +28,10 @@ export interface RuntimeState {
   finished: boolean;
   /** Text to display on the end screen (empty string = show default "おわり"). */
   endText: string;
+  /** Scene-entry transition name (e.g. "fade", "white"), or null. */
+  transition: string | null;
+  /** Monotonic token so the view can re-trigger the same transition. */
+  transitionToken: number;
 }
 
 function emptyState(): RuntimeState {
@@ -44,6 +48,8 @@ function emptyState(): RuntimeState {
     choices: null,
     finished: false,
     endText: "",
+    transition: null,
+    transitionToken: 0,
   };
 }
 
@@ -139,7 +145,13 @@ export class Runtime {
     if (!choices) return this.state;
     const option = choices[optionIndex];
     this.state.choices = null;
-    if (option) this.gotoScene(option.goto);
+    if (option) {
+      if (option.transition) {
+        this.state.transition = option.transition;
+        this.state.transitionToken++;
+      }
+      this.gotoScene(option.goto);
+    }
     return this.next();
   }
 
@@ -182,6 +194,10 @@ export class Runtime {
         this.state.choices = cmd.options;
         return true;
       case "jump":
+        if (cmd.transition) {
+          this.state.transition = cmd.transition;
+          this.state.transitionToken++;
+        }
         this.gotoScene(cmd.target);
         return false;
       case "end":

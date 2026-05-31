@@ -65,6 +65,8 @@ export interface ChoiceOption {
   text: string;
   /** Target scene id to jump to when selected. */
   goto: string;
+  /** Optional scene-entry transition (e.g. "fade", "white"). */
+  transition?: string;
 }
 
 /**
@@ -81,7 +83,7 @@ export type Command =
   | { kind: "se"; line: number; asset: string }
   | { kind: "wait"; line: number; ms: number }
   | { kind: "choice"; line: number; options: ChoiceOption[] }
-  | { kind: "jump"; line: number; target: string }
+  | { kind: "jump"; line: number; target: string; transition?: string }
   | { kind: "end"; line: number; text?: string };
 
 export type CommandKind = Command["kind"];

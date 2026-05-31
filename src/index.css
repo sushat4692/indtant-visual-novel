@@ -37,3 +37,16 @@
   to { opacity: 0.15; }
 }
 .vn-fadeout { animation: vn-fadeout-kf 0.6s ease-out forwards; }
+
+/* Scene-entry transitions (triggered on jump / choice with optional transition). */
+@keyframes vn-trans-fade-kf {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.vn-trans-fade { animation: vn-trans-fade-kf 0.7s ease-out both; }
+
+@keyframes vn-trans-white-kf {
+  from { opacity: 0; filter: brightness(4); }
+  to   { opacity: 1; filter: brightness(1); }
+}
+.vn-trans-white { animation: vn-trans-white-kf 0.7s ease-out both; }

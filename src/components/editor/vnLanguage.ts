@@ -178,6 +178,11 @@ const EFFECTS: Completion[] = [
   { label: "fadeout", type: "function" },
 ];
 
+const TRANSITION_COMPLETIONS: Completion[] = [
+  { label: "fade",  type: "enum", detail: "黒からフェードイン" },
+  { label: "white", type: "enum", detail: "白からフェードイン" },
+];
+
 // Inline text style tags (used inside say/narration text).
 const STYLE_TAGS: Completion[] = [
   { label: "{red}", type: "keyword", detail: "赤" },
@@ -290,13 +295,24 @@ function makeCompletionSource(data: CompletionData) {
       };
     }
 
+    // jump <sceneId> — 3rd token = transition (optional)
+    if (cmd === "jump" && parts.length === 3) {
+      return { from: wordStart, options: TRANSITION_COMPLETIONS, validFor: /^\w*$/ };
+    }
+
     // -> <text> : <sceneId> — after the colon
     if (trimmed.startsWith("->")) {
       const colonIdx = textBefore.lastIndexOf(":");
       if (colonIdx !== -1 && colonIdx > textBefore.indexOf("->") + 1) {
         const afterColon = textBefore.slice(colonIdx + 1).trim();
+        const afterParts = afterColon.split(/\s+/);
+        // 2nd token after colon = transition
+        if (afterParts.length === 2 && !textBefore.endsWith(" ")) {
+          return { from: wordStart, options: TRANSITION_COMPLETIONS, validFor: /^\w*$/ };
+        }
+        // 1st token after colon = scene ID
         return {
-          from: ctx.pos - afterColon.length,
+          from: ctx.pos - (afterParts[afterParts.length - 1]?.length ?? 0),
           options: data.sceneIds.map((id) => ({ label: id, type: "variable" })),
           validFor: /^\w*$/,
         };

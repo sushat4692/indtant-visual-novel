@@ -24,6 +24,12 @@ const EFFECT_CLASS: Record<string, string> = {
   fadeout: "vn-fadeout",
 };
 
+/** Map a transition name to its scene-entry CSS animation class. */
+const TRANSITION_CLASS: Record<string, string> = {
+  fade:  "vn-trans-fade",
+  white: "vn-trans-white",
+};
+
 export interface StageViewProps {
   project: Project;
   state: RuntimeState;
@@ -55,6 +61,7 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
   useSe(enableAudio ? state.se : null, enableAudio ? state.seToken : 0);
   const { ref: fitRef, size } = useFitBox(ASPECT_RATIO[stageOrientation]);
   const [effectClass, setEffectClass] = useState("");
+  const [transClass, setTransClass] = useState("");
 
   useEffect(() => {
     if (!state.effect) return;
@@ -64,10 +71,18 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
     return () => clearTimeout(timer);
   }, [state.effect, state.effectToken]);
 
+  useEffect(() => {
+    if (!state.transition) return;
+    const cls = TRANSITION_CLASS[state.transition] ?? "";
+    setTransClass(cls);
+    const timer = setTimeout(() => setTransClass(""), 800);
+    return () => clearTimeout(timer);
+  }, [state.transition, state.transitionToken]);
+
   return (
     <div ref={fitRef} className="flex h-full w-full overflow-hidden items-center justify-center">
       <div
-        className={`relative overflow-hidden rounded-lg bg-slate-900 ${effectClass}`}
+        className={`relative overflow-hidden rounded-lg bg-slate-900 ${effectClass} ${transClass}`}
         style={
           size
             ? {
