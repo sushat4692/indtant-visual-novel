@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { editorRouteApi } from "../router";
 import type { CharacterDef, Project } from "../engine/types";
 import { getProject, saveProject } from "../storage/projectStore";
 import { listAssets } from "../storage/assetStore";
@@ -15,7 +16,7 @@ import { AssetPanel } from "../components/editor/AssetPanel";
 import { ExportDialog } from "../components/editor/ExportDialog";
 
 export function EditorPage() {
-  const { projectId } = useParams();
+  const { projectId } = editorRouteApi.useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [activeScene, setActiveScene] = useState<string>("");
@@ -29,7 +30,7 @@ export function EditorPage() {
       if (!p) return setMissing(true);
       if (p.locked) {
         // Play-only projects must not be edited.
-        navigate(`/play/${p.id}`, { replace: true });
+        navigate({ to: "/play/$projectId", params: { projectId: p.id }, replace: true });
         return;
       }
       setProject(p);
@@ -132,7 +133,11 @@ export function EditorPage() {
           />
         </div>
         <div className="flex gap-2">
-          <Link to={`/play/${project.id}`} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700">
+          <Link
+            to="/play/$projectId"
+            params={{ projectId: project.id }}
+            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700"
+          >
             再生
           </Link>
           <button onClick={() => setShowExport(true)} className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">

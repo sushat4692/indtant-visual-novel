@@ -9,7 +9,7 @@
 
 ## 技術スタック
 
-React 18 + TypeScript + Vite + Tailwind CSS。外部の重い依存は持たず、暗号化も WebCrypto のみで実装。
+React 19 + TypeScript + Vite + Tailwind CSS 4 + TanStack Router。暗号化は WebCrypto のみで実装。
 
 ```bash
 npm install
@@ -84,6 +84,7 @@ src/
   assets/        組み込みプレースホルダ（SVG生成）レジストリ
   storage/       IndexedDB（プロジェクト / アップロード画像）
   share/         エクスポート/インポート、バンドル化、暗号化
+  router.tsx     TanStack Router のルート定義（型安全なルートツリー）
   routes/        Home / Editor / Player ページ
   data/          初回シードのサンプルプロジェクト
 ```

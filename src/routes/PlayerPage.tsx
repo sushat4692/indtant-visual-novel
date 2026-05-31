@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
+import { playRouteApi } from "../router";
 import { getProject } from "../storage/projectStore";
 import type { Project } from "../engine/types";
 import { Runtime, type RuntimeState } from "../engine/runtime";
 import { StageView } from "../components/StageView";
 
 export function PlayerPage() {
-  const { projectId } = useParams();
+  const { projectId } = playRouteApi.useParams();
   const [project, setProject] = useState<Project | null>(null);
   const [missing, setMissing] = useState(false);
 

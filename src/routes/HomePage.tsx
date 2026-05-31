@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { Project } from "../engine/types";
 import { listProjects, saveProject, deleteProject, getProject } from "../storage/projectStore";
 import { makeSampleProject } from "../data/sampleProject";
@@ -51,7 +51,7 @@ export function HomePage() {
   const onCreate = async () => {
     const p = blankProject();
     await saveProject(p);
-    navigate(`/editor/${p.id}`);
+    navigate({ to: "/editor/$projectId", params: { projectId: p.id } });
   };
 
   const onDelete = async (id: string) => {
@@ -69,7 +69,7 @@ export function HomePage() {
       if (parsed.mode === "editable") {
         const p = await importEditable(parsed);
         await refresh();
-        navigate(`/editor/${p.id}`);
+        navigate({ to: "/editor/$projectId", params: { projectId: p.id } });
       } else {
         setPendingPlay(parsed);
       }
@@ -86,7 +86,7 @@ export function HomePage() {
       setPendingPlay(null);
       setPassword("");
       await refresh();
-      navigate(`/play/${p.id}`);
+      navigate({ to: "/play/$projectId", params: { projectId: p.id } });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
@@ -160,14 +160,16 @@ export function HomePage() {
               </div>
               <div className="flex shrink-0 gap-2">
                 <Link
-                  to={`/play/${p.id}`}
+                  to="/play/$projectId"
+                  params={{ projectId: p.id }}
                   className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700"
                 >
                   再生
                 </Link>
                 {!p.locked && (
                   <Link
-                    to={`/editor/${p.id}`}
+                    to="/editor/$projectId"
+                    params={{ projectId: p.id }}
                     className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100"
                   >
                     編集
