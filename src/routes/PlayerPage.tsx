@@ -52,7 +52,7 @@ function Player({ project }: { project: Project }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-black">
+    <div className="flex h-screen flex-col overflow-hidden bg-black">
       <div className="flex items-center justify-between px-4 py-2 text-sm text-white/80">
         <Link to="/" className="hover:text-white">← ホーム</Link>
         <span className="font-medium">{project.meta.title || project.name}</span>

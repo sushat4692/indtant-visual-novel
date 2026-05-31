@@ -63,14 +63,17 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
   }, [state.effect, state.effectToken]);
 
   return (
-    // Outer letterbox: fills the available space; the stage is sized in JS to the
-    // largest fixed-ratio box that fits, so it never overflows or distorts.
-    <div ref={fitRef} className="flex h-full max-h-full w-full items-center justify-center">
+    <div ref={fitRef} className="flex h-full w-full overflow-hidden items-center justify-center">
       <div
         className={`relative overflow-hidden rounded-lg bg-slate-900 ${effectClass}`}
         style={
           size
-            ? { width: size.width, height: size.height }
+            ? {
+                width: size.width,
+                height: size.height,
+                // Scale all em-based children proportionally to stage width.
+                fontSize: `clamp(10px, ${(size.width / 45).toFixed(2)}px, 28px)`,
+              }
             : { aspectRatio: stageOrientation === "portrait" ? "9 / 16" : "16 / 9", width: "100%" }
         }
         onClick={() => {
@@ -85,7 +88,7 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
         <TextBox speaker={state.speaker} text={state.text} />
         {state.choices && onSelect && <ChoiceMenu options={state.choices} onSelect={onSelect} />}
         {state.finished && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70 text-xl font-bold text-white">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/70 text-[1.5em] font-bold text-white">
             おわり
           </div>
         )}
