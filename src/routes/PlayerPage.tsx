@@ -5,6 +5,7 @@ import { getProject } from "../storage/projectStore";
 import type { Project } from "../engine/types";
 import { Runtime, type RuntimeState } from "../engine/runtime";
 import { StageView } from "../components/StageView";
+import { TitleScreen } from "../components/TitleScreen";
 
 export function PlayerPage() {
   const { projectId } = playRouteApi.useParams();
@@ -32,15 +33,15 @@ export function PlayerPage() {
 }
 
 function Player({ project }: { project: Project }) {
-  // A fresh runtime per project; `tick` forces re-render on state changes.
   const runtime = useMemo(() => new Runtime(project), [project]);
   const [, setTick] = useState(0);
   const [state, setState] = useState<RuntimeState>(runtime.state);
+  const [started, setStarted] = useState(false);
 
-  // Advance to the first line on mount.
+  // Advance to first stop point only after the user clicks 始める.
   useEffect(() => {
-    setState({ ...runtime.next() });
-  }, [runtime]);
+    if (started) setState({ ...runtime.next() });
+  }, [started, runtime]);
 
   const advance = () => {
     setState({ ...runtime.next() });
@@ -51,7 +52,9 @@ function Player({ project }: { project: Project }) {
     setTick((t) => t + 1);
   };
   const restart = () => {
-    setState({ ...runtime.reset() });
+    runtime.reset();
+    setState({ ...runtime.state });
+    setStarted(false);
     setTick((t) => t + 1);
   };
 
@@ -64,7 +67,10 @@ function Player({ project }: { project: Project }) {
       </div>
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center p-2 sm:p-4">
         <div className="flex min-h-0 w-full flex-1 items-center justify-center">
-          <StageView project={project} state={state} onAdvance={advance} onSelect={select} onRestart={restart} enableAudio />
+          {!started
+            ? <TitleScreen project={project} onStart={() => setStarted(true)} />
+            : <StageView project={project} state={state} onAdvance={advance} onSelect={select} onRestart={restart} enableAudio />
+          }
         </div>
         <div className="w-full">
           <p className="mt-2 text-center text-xs text-white/50">

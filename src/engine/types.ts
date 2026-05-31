@@ -35,6 +35,8 @@ export interface ProjectMeta {
    * readers should fall back to "landscape" via `meta.orientation ?? "landscape"`.
    */
   orientation: Orientation;
+  /** Asset ID for the title screen background (optional). */
+  titleBg?: string;
 }
 
 /** A full authored project. */

@@ -4,7 +4,7 @@ import { editorRouteApi } from "../router";
 import type { CharacterDef, Orientation, Project } from "../engine/types";
 import { ORIENTATION_LABEL, resolveOrientation } from "../engine/orientation";
 import { getProject, saveProject } from "../storage/projectStore";
-import { BUILTIN_ASSETS } from "../assets/builtinRegistry";
+import { BUILTIN_ASSETS, builtinAssetsByType } from "../assets/builtinRegistry";
 import { parseScene } from "../engine/parser";
 import { validateProject } from "../engine/validate";
 import { Runtime } from "../engine/runtime";
@@ -202,6 +202,28 @@ export function EditorPage() {
           <CharacterPanel project={project} onChange={setCharacters} />
           <hr className="border-slate-200" />
           <AssetPanel />
+          <hr className="border-slate-200" />
+          <div className="space-y-1.5 text-xs">
+            <h3 className="text-sm font-bold text-slate-700">プロジェクト設定</h3>
+            <div className="flex items-center gap-1">
+              <span className="w-16 shrink-0 text-slate-600">タイトル背景</span>
+              <select
+                value={project.meta.titleBg ?? ""}
+                onChange={(e) =>
+                  mutate((p) => ({
+                    ...p,
+                    meta: { ...p.meta, titleBg: e.target.value || undefined },
+                  }))
+                }
+                className="flex-1 rounded border border-slate-300 px-1 py-0.5 text-slate-800"
+              >
+                <option value="">なし</option>
+                {builtinAssetsByType("background").map((a) => (
+                  <option key={a.id} value={a.id}>{a.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
         </aside>
 
         {/* Center: script editor */}
