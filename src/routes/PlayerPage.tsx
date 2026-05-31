@@ -50,6 +50,10 @@ function Player({ project }: { project: Project }) {
     setState({ ...runtime.select(i) });
     setTick((t) => t + 1);
   };
+  const restart = () => {
+    setState({ ...runtime.reset() });
+    setTick((t) => t + 1);
+  };
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-black">
@@ -60,12 +64,12 @@ function Player({ project }: { project: Project }) {
       </div>
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center p-2 sm:p-4">
         <div className="flex min-h-0 w-full flex-1 items-center justify-center">
-          <StageView project={project} state={state} onAdvance={advance} onSelect={select} enableAudio />
+          <StageView project={project} state={state} onAdvance={advance} onSelect={select} onRestart={restart} enableAudio />
         </div>
         <div className="w-full">
           <p className="mt-2 text-center text-xs text-white/50">
             {state.finished
-              ? "おしまいです。"
+              ? ""
               : state.choices
                 ? "選択肢を選んでください。"
                 : "画面をクリック / タップで進む"}

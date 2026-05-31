@@ -26,6 +26,8 @@ export interface RuntimeState {
   choices: ChoiceOption[] | null;
   /** True once `end` was reached or the script ran out. */
   finished: boolean;
+  /** Text to display on the end screen (empty string = show default "おわり"). */
+  endText: string;
 }
 
 function emptyState(): RuntimeState {
@@ -41,6 +43,7 @@ function emptyState(): RuntimeState {
     text: "",
     choices: null,
     finished: false,
+    endText: "",
   };
 }
 
@@ -183,7 +186,16 @@ export class Runtime {
         return false;
       case "end":
         this.state.finished = true;
+        this.state.endText = cmd.text ?? "";
         return true;
     }
+  }
+
+  /** Reset to the beginning and advance to the first stop point. */
+  reset(): RuntimeState {
+    this.sceneId = this.project.meta.startScene;
+    this.index = 0;
+    this.state = emptyState();
+    return this.next();
   }
 }

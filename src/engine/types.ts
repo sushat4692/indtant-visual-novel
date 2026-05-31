@@ -80,7 +80,7 @@ export type Command =
   | { kind: "wait"; line: number; ms: number }
   | { kind: "choice"; line: number; options: ChoiceOption[] }
   | { kind: "jump"; line: number; target: string }
-  | { kind: "end"; line: number };
+  | { kind: "end"; line: number; text?: string };
 
 export type CommandKind = Command["kind"];
 

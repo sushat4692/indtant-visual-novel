@@ -38,6 +38,8 @@ export interface StageViewProps {
   onSelect?: (index: number) => void;
   /** Enable audio playback (off by default; turn on in the full player). */
   enableAudio?: boolean;
+  /** Called when the user clicks "もう一度" on the end overlay. */
+  onRestart?: () => void;
 }
 
 /**
@@ -46,7 +48,7 @@ export interface StageViewProps {
  * editor's live preview. Effects are driven by `state.effectToken` so the same
  * effect can replay.
  */
-export function StageView({ project, state, orientation, onAdvance, onSelect, enableAudio }: StageViewProps) {
+export function StageView({ project, state, orientation, onAdvance, onSelect, enableAudio, onRestart }: StageViewProps) {
   const stageOrientation = resolveOrientation(orientation ?? project.meta.orientation);
   const bgUrl = useAssetUrl(state.background, stageOrientation);
   useBgm(enableAudio ? state.bgm : null);
@@ -88,8 +90,18 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
         <TextBox speaker={state.speaker} text={state.text} />
         {state.choices && onSelect && <ChoiceMenu options={state.choices} onSelect={onSelect} />}
         {state.finished && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70 text-[1.5em] font-bold text-white">
-            おわり
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[1em] bg-black/70">
+            <p className="text-[1.5em] font-bold text-white">
+              {state.endText || "おわり"}
+            </p>
+            {onRestart && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onRestart(); }}
+                className="rounded-full border border-white/50 bg-white/20 px-[1.5em] py-[0.5em] text-[0.9em] text-white backdrop-blur-sm hover:bg-white/35 transition"
+              >
+                もう一度
+              </button>
+            )}
           </div>
         )}
       </div>
