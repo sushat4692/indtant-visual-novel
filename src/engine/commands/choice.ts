@@ -17,9 +17,9 @@ export const choiceCommand: CommandDef = {
     }
     const text = rest.slice(0, sep).trim();
     const afterColon = rest.slice(sep + 1).trim();
-    const [goto, transition] = afterColon.split(/\s+/);
+    const [goto, transition, speed] = afterColon.split(/\s+/);
     if (!text) throw new Error("選択肢のテキストが空です");
     if (!goto) throw new Error("選択肢の遷移先シーンIDが空です");
-    return { kind: "choice", line: lineNumber, options: [{ text, goto, transition: transition || undefined }] };
+    return { kind: "choice", line: lineNumber, options: [{ text, goto, transition: transition || undefined, speed: speed || undefined }] };
   },
 };

@@ -7,8 +7,8 @@ export const jumpCommand: CommandDef = {
   match: (line) => /^jump\s+/.test(line),
   parse: (line, lineNumber) => {
     const parts = line.slice(4).trim().split(/\s+/);
-    const [target, transition] = parts;
+    const [target, transition, speed] = parts;
     if (!target) throw new Error("jump コマンドには遷移先のシーンIDが必要です (例: jump confess)");
-    return { kind: "jump", line: lineNumber, target, transition: transition || undefined };
+    return { kind: "jump", line: lineNumber, target, transition: transition || undefined, speed: speed || undefined };
   },
 };

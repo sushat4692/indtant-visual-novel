@@ -67,6 +67,8 @@ export interface ChoiceOption {
   goto: string;
   /** Optional scene-entry transition (e.g. "fade", "white"). */
   transition?: string;
+  /** Optional transition speed preset or duration in seconds. */
+  speed?: string;
 }
 
 /**
@@ -83,7 +85,7 @@ export type Command =
   | { kind: "se"; line: number; asset: string }
   | { kind: "wait"; line: number; ms: number }
   | { kind: "choice"; line: number; options: ChoiceOption[] }
-  | { kind: "jump"; line: number; target: string; transition?: string }
+  | { kind: "jump"; line: number; target: string; transition?: string; speed?: string }
   | { kind: "end"; line: number; text?: string };
 
 export type CommandKind = Command["kind"];

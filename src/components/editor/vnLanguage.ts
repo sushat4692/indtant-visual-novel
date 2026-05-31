@@ -183,6 +183,12 @@ const TRANSITION_COMPLETIONS: Completion[] = [
   { label: "white", type: "enum", detail: "白からフェードイン" },
 ];
 
+const SPEED_COMPLETIONS: Completion[] = [
+  { label: "slow",   type: "enum", detail: "低速 (1.4s)" },
+  { label: "normal", type: "enum", detail: "標準 (0.7s)" },
+  { label: "fast",   type: "enum", detail: "高速 (0.35s)" },
+];
+
 // Inline text style tags (used inside say/narration text).
 const STYLE_TAGS: Completion[] = [
   { label: "{red}", type: "keyword", detail: "赤" },
@@ -300,12 +306,21 @@ function makeCompletionSource(data: CompletionData) {
       return { from: wordStart, options: TRANSITION_COMPLETIONS, validFor: /^\w*$/ };
     }
 
+    // jump <sceneId> <transition> — 4th token = speed (optional)
+    if (cmd === "jump" && parts.length === 4) {
+      return { from: wordStart, options: SPEED_COMPLETIONS, validFor: /^[\w.]*$/ };
+    }
+
     // -> <text> : <sceneId> — after the colon
     if (trimmed.startsWith("->")) {
       const colonIdx = textBefore.lastIndexOf(":");
       if (colonIdx !== -1 && colonIdx > textBefore.indexOf("->") + 1) {
         const afterColon = textBefore.slice(colonIdx + 1).trim();
         const afterParts = afterColon.split(/\s+/);
+        // 3rd token after colon = speed
+        if (afterParts.length === 3 && !textBefore.endsWith(" ")) {
+          return { from: wordStart, options: SPEED_COMPLETIONS, validFor: /^[\w.]*$/ };
+        }
         // 2nd token after colon = transition
         if (afterParts.length === 2 && !textBefore.endsWith(" ")) {
           return { from: wordStart, options: TRANSITION_COMPLETIONS, validFor: /^\w*$/ };

@@ -75,7 +75,8 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
     if (!state.transition) return;
     const cls = TRANSITION_CLASS[state.transition] ?? "";
     setTransClass(cls);
-    const timer = setTimeout(() => setTransClass(""), 800);
+    const ms = (state.transitionDuration ?? 0.7) * 1000 + 100;
+    const timer = setTimeout(() => setTransClass(""), ms);
     return () => clearTimeout(timer);
   }, [state.transition, state.transitionToken]);
 
@@ -88,9 +89,9 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
             ? {
                 width: size.width,
                 height: size.height,
-                // Scale all em-based children proportionally to stage width.
                 fontSize: `max(10px, ${(size.width / 45).toFixed(2)}px)`,
-              }
+                "--vn-trans-duration": `${state.transitionDuration ?? 0.7}s`,
+              } as React.CSSProperties
             : { aspectRatio: stageOrientation === "portrait" ? "9 / 16" : "16 / 9", width: "100%" }
         }
         onClick={() => {

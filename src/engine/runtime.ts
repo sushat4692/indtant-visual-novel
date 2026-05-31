@@ -1,6 +1,14 @@
 import type { Command, ChoiceOption, Position, Project } from "./types";
 import { parseScene } from "./parser";
 
+const SPEED_PRESETS: Record<string, number> = { slow: 1.4, normal: 0.7, fast: 0.35 };
+function parseTransitionDuration(speed?: string): number {
+  if (!speed) return 0.7;
+  if (SPEED_PRESETS[speed]) return SPEED_PRESETS[speed];
+  const n = parseFloat(speed);
+  return isFinite(n) && n > 0 ? n : 0.7;
+}
+
 /** A character currently visible on the stage. */
 export interface VisibleChar {
   char: string;
@@ -32,6 +40,8 @@ export interface RuntimeState {
   transition: string | null;
   /** Monotonic token so the view can re-trigger the same transition. */
   transitionToken: number;
+  /** Transition duration in seconds (default 0.7). */
+  transitionDuration: number;
 }
 
 function emptyState(): RuntimeState {
@@ -50,6 +60,7 @@ function emptyState(): RuntimeState {
     endText: "",
     transition: null,
     transitionToken: 0,
+    transitionDuration: 0.7,
   };
 }
 
@@ -148,6 +159,7 @@ export class Runtime {
     if (option) {
       if (option.transition) {
         this.state.transition = option.transition;
+        this.state.transitionDuration = parseTransitionDuration(option.speed);
         this.state.transitionToken++;
       }
       this.gotoScene(option.goto);
@@ -196,6 +208,7 @@ export class Runtime {
       case "jump":
         if (cmd.transition) {
           this.state.transition = cmd.transition;
+          this.state.transitionDuration = parseTransitionDuration(cmd.speed);
           this.state.transitionToken++;
         }
         this.gotoScene(cmd.target);

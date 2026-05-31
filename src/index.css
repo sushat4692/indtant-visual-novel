@@ -43,10 +43,10 @@
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-.vn-trans-fade { animation: vn-trans-fade-kf 0.7s ease-out both; }
+.vn-trans-fade { animation: vn-trans-fade-kf var(--vn-trans-duration, 0.7s) ease-out both; }
 
 @keyframes vn-trans-white-kf {
   from { opacity: 0; filter: brightness(4); }
   to   { opacity: 1; filter: brightness(1); }
 }
-.vn-trans-white { animation: vn-trans-white-kf 0.7s ease-out both; }
+.vn-trans-white { animation: vn-trans-white-kf var(--vn-trans-duration, 0.7s) ease-out both; }
