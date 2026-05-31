@@ -72,7 +72,7 @@ export function StageView({ project, state, orientation, onAdvance, onSelect, en
                 width: size.width,
                 height: size.height,
                 // Scale all em-based children proportionally to stage width.
-                fontSize: `clamp(10px, ${(size.width / 45).toFixed(2)}px, 28px)`,
+                fontSize: `max(10px, ${(size.width / 45).toFixed(2)}px)`,
               }
             : { aspectRatio: stageOrientation === "portrait" ? "9 / 16" : "16 / 9", width: "100%" }
         }
