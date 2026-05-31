@@ -110,15 +110,15 @@ export function SceneList({
                   </button>
                   <div className="ml-1 hidden shrink-0 gap-1 group-hover:flex">
                     {!isStart && (
-                      <button onClick={() => onSetStart(s.id)} title="開始シーンにする" className="text-xs text-slate-500 hover:text-emerald-600">
-                        開始
+                      <button onClick={() => onSetStart(s.id)} title="開始シーンに設定" className="text-xs text-slate-500 hover:text-emerald-600">
+                        先頭に
                       </button>
                     )}
-                    <button onClick={() => startRename(s)} title="名前・ID変更" className="text-xs text-slate-500 hover:text-sky-600">
-                      名
+                    <button onClick={() => startRename(s)} title="名前・IDを変更" className="text-xs text-slate-500 hover:text-sky-600">
+                      変更
                     </button>
-                    <button onClick={() => onDelete(s.id)} title="削除" className="text-xs text-slate-500 hover:text-red-600">
-                      ×
+                    <button onClick={() => onDelete(s.id)} title="シーンを削除" className="text-xs text-slate-500 hover:text-red-600">
+                      削除
                     </button>
                   </div>
                 </div>
