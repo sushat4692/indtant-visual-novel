@@ -3,6 +3,8 @@ import type { Orientation, Project } from "../engine/types";
 import type { RuntimeState } from "../engine/runtime";
 import { resolveOrientation } from "../engine/orientation";
 import { useAssetUrl } from "./useAssetUrl";
+import { useBgm } from "./useBgm";
+import { useSe } from "./useSe";
 import { useFitBox } from "./useFitBox";
 import { CharacterLayer } from "./CharacterLayer";
 import { TextBox } from "./TextBox";
@@ -34,6 +36,8 @@ export interface StageViewProps {
   onAdvance?: () => void;
   /** Selecting a choice option. */
   onSelect?: (index: number) => void;
+  /** Enable audio playback (off by default; turn on in the full player). */
+  enableAudio?: boolean;
 }
 
 /**
@@ -42,9 +46,11 @@ export interface StageViewProps {
  * editor's live preview. Effects are driven by `state.effectToken` so the same
  * effect can replay.
  */
-export function StageView({ project, state, orientation, onAdvance, onSelect }: StageViewProps) {
+export function StageView({ project, state, orientation, onAdvance, onSelect, enableAudio }: StageViewProps) {
   const stageOrientation = resolveOrientation(orientation ?? project.meta.orientation);
   const bgUrl = useAssetUrl(state.background, stageOrientation);
+  useBgm(enableAudio ? state.bgm : null);
+  useSe(enableAudio ? state.se : null, enableAudio ? state.seToken : 0);
   const { ref: fitRef, size } = useFitBox(ASPECT_RATIO[stageOrientation]);
   const [effectClass, setEffectClass] = useState("");
 

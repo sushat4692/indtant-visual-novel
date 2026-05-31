@@ -60,7 +60,7 @@ function Player({ project }: { project: Project }) {
       </div>
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center p-2 sm:p-4">
         <div className="flex min-h-0 w-full max-w-5xl flex-1 items-center justify-center">
-          <StageView project={project} state={state} onAdvance={advance} onSelect={select} />
+          <StageView project={project} state={state} onAdvance={advance} onSelect={select} enableAudio />
         </div>
         <div className="w-full max-w-5xl">
           <p className="mt-2 text-center text-xs text-white/50">

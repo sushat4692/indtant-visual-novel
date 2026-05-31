@@ -75,7 +75,7 @@ export type Command =
   | { kind: "hide"; line: number; char: string }
   | { kind: "say"; line: number; speaker: string | null; text: string }
   | { kind: "effect"; line: number; effect: string }
-  | { kind: "bgm"; line: number; asset: string }
+  | { kind: "bgm"; line: number; asset: string | null }
   | { kind: "se"; line: number; asset: string }
   | { kind: "wait"; line: number; ms: number }
   | { kind: "choice"; line: number; options: ChoiceOption[] }

@@ -16,6 +16,10 @@ export interface RuntimeState {
   effect: string | null;
   /** Monotonic token so the view can re-trigger the same effect. */
   effectToken: number;
+  /** Last SE that fired (one-shot audio). */
+  se: string | null;
+  /** Monotonic token so the view can re-trigger the same SE. */
+  seToken: number;
   speaker: string | null;
   text: string;
   /** Choice menu currently awaiting selection, or null. */
@@ -31,6 +35,8 @@ function emptyState(): RuntimeState {
     characters: [],
     effect: null,
     effectToken: 0,
+    se: null,
+    seToken: 0,
     speaker: null,
     text: "",
     choices: null,
@@ -101,6 +107,27 @@ export class Runtime {
     }
   }
 
+  /**
+   * Seek to the command at or just before the given 1-based source line number,
+   * fast-forwarding all preceding commands to reconstruct state (bg, characters,
+   * bgm, etc.), then advance to the first stop point.
+   */
+  seekToLine(lineNumber: number): RuntimeState {
+    const commands = this.commandsFor(this.sceneId);
+    let targetIndex = 0;
+    for (let i = 0; i < commands.length; i++) {
+      if (commands[i].line <= lineNumber) targetIndex = i;
+      else break;
+    }
+    this.state = emptyState();
+    this.index = 0;
+    for (let i = 0; i < targetIndex; i++) {
+      this.apply(commands[i]);
+      this.index = i + 1;
+    }
+    return this.next();
+  }
+
   /** Resolve a pending choice by option index. */
   select(optionIndex: number): RuntimeState {
     const choices = this.state.choices;
@@ -124,7 +151,8 @@ export class Runtime {
         this.state.bgm = cmd.asset;
         return false;
       case "se":
-        // v1: sound effects are a no-op placeholder beyond state passthrough.
+        this.state.se = cmd.asset;
+        this.state.seToken++;
         return false;
       case "show": {
         const others = this.state.characters.filter((c) => c.char !== cmd.char);

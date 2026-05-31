@@ -34,9 +34,11 @@ export function validateProject(project: Project, knownAssetIds: Set<string>): P
       const at = (message: string) => errors.push({ scene: scene.id, line: cmd.line, message });
       switch (cmd.kind) {
         case "bg":
-        case "bgm":
         case "se":
           if (!assetKnown(cmd.asset)) at(`未知のアセットID: "${cmd.asset}"`);
+          break;
+        case "bgm":
+          if (cmd.asset !== null && !assetKnown(cmd.asset)) at(`未知のアセットID: "${cmd.asset}"`);
           break;
         case "show":
         case "hide":

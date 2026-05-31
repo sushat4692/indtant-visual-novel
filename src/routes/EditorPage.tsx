@@ -21,6 +21,7 @@ export function EditorPage() {
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [activeScene, setActiveScene] = useState<string>("");
+  const [cursorLine, setCursorLine] = useState(1);
   const [uploads, setUploads] = useState<StoredAsset[]>([]);
   const [showExport, setShowExport] = useState(false);
   const [missing, setMissing] = useState(false);
@@ -174,7 +175,7 @@ export function EditorPage() {
         {/* Center: script editor */}
         <main className="col-span-5 overflow-hidden rounded-lg bg-white p-3">
           {scene ? (
-            <ScriptEditor value={scene.script} onChange={updateScript} errors={[...sceneErrors, ...projectErrors]} />
+            <ScriptEditor value={scene.script} onChange={updateScript} errors={[...sceneErrors, ...projectErrors]} onCursorChange={setCursorLine} />
           ) : (
             <p className="text-slate-400">シーンを選択してください。</p>
           )}
@@ -183,7 +184,7 @@ export function EditorPage() {
         {/* Right: live preview */}
         <section className="col-span-4 flex flex-col gap-2 overflow-y-auto rounded-lg bg-white p-3">
           <h3 className="text-sm font-bold text-slate-600">プレビュー（このシーン）</h3>
-          {scene && <ScenePreview project={project} sceneId={activeScene} />}
+          {scene && <ScenePreview project={project} sceneId={activeScene} cursorLine={cursorLine} />}
         </section>
       </div>
 
@@ -196,7 +197,7 @@ export function EditorPage() {
  * Live preview that runs a single scene from its start. Re-creates the runtime
  * whenever the scene content changes so edits are reflected immediately.
  */
-function ScenePreview({ project, sceneId }: { project: Project; sceneId: string }) {
+function ScenePreview({ project, sceneId, cursorLine }: { project: Project; sceneId: string; cursorLine: number }) {
   const script = project.scenes[sceneId]?.script ?? "";
   const savedOrientation = resolveOrientation(project.meta.orientation);
   // Transient preview-only orientation override; does not change the saved value.
@@ -243,6 +244,13 @@ function ScenePreview({ project, sceneId }: { project: Project; sceneId: string 
           className="rounded bg-slate-700 px-3 py-1 text-xs text-white hover:bg-slate-800"
         >
           次へ ▶
+        </button>
+        <button
+          onClick={() => setState({ ...runtime.seekToLine(cursorLine) })}
+          className="rounded bg-sky-700 px-3 py-1 text-xs text-white hover:bg-sky-800"
+          title={`${cursorLine}行目から再生`}
+        >
+          カーソル位置から ▶
         </button>
         <span className="text-xs text-slate-400">
           {state.finished ? "終了" : state.choices ? "選択肢待ち" : "クリックで進む"}
