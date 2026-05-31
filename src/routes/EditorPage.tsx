@@ -164,7 +164,8 @@ export function EditorPage() {
           <Link to="/" className="text-sm text-slate-500 hover:text-slate-800">← ホーム</Link>
           <input
             value={project.name}
-            onChange={(e) => mutate((p) => ({ ...p, name: e.target.value, meta: { ...p.meta, title: e.target.value } }))}
+            onChange={(e) => mutate((p) => ({ ...p, name: e.target.value }))}
+            title="プロジェクト名（管理用）"
             className="rounded border border-transparent px-2 py-1 text-sm font-bold text-slate-800 hover:border-slate-300 focus:border-sky-500 focus:outline-none"
           />
           <OrientationToggle
@@ -205,6 +206,24 @@ export function EditorPage() {
           <hr className="border-slate-200" />
           <div className="space-y-1.5 text-xs">
             <h3 className="text-sm font-bold text-slate-700">プロジェクト設定</h3>
+            <div className="flex items-center gap-1">
+              <span className="w-16 shrink-0 text-slate-600">タイトル</span>
+              <input
+                value={project.meta.title}
+                onChange={(e) => mutate((p) => ({ ...p, meta: { ...p.meta, title: e.target.value } }))}
+                placeholder="タイトル画面に表示"
+                className="flex-1 rounded border border-slate-300 px-1 py-0.5 text-slate-800"
+              />
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-16 shrink-0 text-slate-600">サブタイトル</span>
+              <input
+                value={project.meta.subtitle ?? ""}
+                onChange={(e) => mutate((p) => ({ ...p, meta: { ...p.meta, subtitle: e.target.value || undefined } }))}
+                placeholder="任意"
+                className="flex-1 rounded border border-slate-300 px-1 py-0.5 text-slate-800"
+              />
+            </div>
             <div className="flex items-center gap-1">
               <span className="w-16 shrink-0 text-slate-600">タイトル背景</span>
               <select

@@ -25,7 +25,10 @@ export interface Scene {
 
 /** Project metadata. */
 export interface ProjectMeta {
+  /** Title shown on the title screen (independent of the management name). */
   title: string;
+  /** Optional subtitle shown under the title. */
+  subtitle?: string;
   /** Scene id where playback starts. */
   startScene: string;
   /** speakerKey -> character definition. */

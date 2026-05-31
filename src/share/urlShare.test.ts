@@ -24,6 +24,7 @@ function makeProject(scenes: Record<string, string>): Project {
     updatedAt: 0,
     meta: {
       title: "テスト作品",
+      subtitle: "〜サブタイトル〜",
       startScene: "start",
       characters: { taro: { name: "太郎", sprite: "char_male_a" } },
       orientation: "landscape",

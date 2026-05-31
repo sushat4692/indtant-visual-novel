@@ -52,9 +52,14 @@ export function TitleScreen({ project, onStart }: Props) {
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center gap-8 px-8 text-center">
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg">
-            {project.meta.title || project.name}
-          </h1>
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold text-white drop-shadow-lg">
+              {project.meta.title || project.name}
+            </h1>
+            {project.meta.subtitle && (
+              <p className="text-lg text-white/80 drop-shadow-lg">{project.meta.subtitle}</p>
+            )}
+          </div>
 
           {/* Progress bar (hidden when ready) */}
           {!isReady && (
