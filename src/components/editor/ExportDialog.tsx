@@ -41,13 +41,13 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
   return (
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <h2 className="mb-4 text-lg font-bold">エクスポート</h2>
+        <h2 className="mb-4 text-lg font-bold text-slate-800">エクスポート</h2>
 
         <div className="space-y-2">
           <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
             <input type="radio" checked={mode === "editable"} onChange={() => setMode("editable")} className="mt-1" />
             <div>
-              <div className="text-sm font-medium">編集可（平文）</div>
+              <div className="text-sm font-medium text-slate-800">編集可（平文）</div>
               <div className="text-xs text-slate-600">
                 .vnproj.json を出力。インポートすると編集できます。
               </div>
@@ -56,7 +56,7 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
           <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
             <input type="radio" checked={mode === "play"} onChange={() => setMode("play")} className="mt-1" />
             <div className="flex-1">
-              <div className="text-sm font-medium">編集不可（パスワード暗号化）</div>
+              <div className="text-sm font-medium text-slate-800">編集不可（パスワード暗号化）</div>
               <div className="text-xs text-slate-600">
                 .vnplay.json を出力。再生専用で、編集はできません。
               </div>

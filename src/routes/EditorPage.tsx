@@ -85,8 +85,49 @@ export function EditorPage() {
     }));
     setActiveScene(id);
   };
-  const renameScene = (id: string, name: string) => {
-    mutate((p) => ({ ...p, scenes: { ...p.scenes, [id]: { ...p.scenes[id], name } } }));
+  const renameScene = (id: string, name: string, newId: string) => {
+    mutate((p) => {
+      // Update display name on existing key first.
+      let scenes: typeof p.scenes = { ...p.scenes, [id]: { ...p.scenes[id], name } };
+      let meta = p.meta;
+
+      if (newId !== id && !p.scenes[newId]) {
+        // Move scene to new key.
+        const entry = { ...scenes[id], id: newId };
+        const reordered: typeof scenes = {};
+        for (const [k, v] of Object.entries(scenes)) {
+          reordered[k === id ? newId : k] = k === id ? entry : v;
+        }
+        // Rewrite jump / choice targets in all scene scripts.
+        for (const sid of Object.keys(reordered)) {
+          reordered[sid] = {
+            ...reordered[sid],
+            script: reordered[sid].script
+              .split("\n")
+              .map((line) => {
+                const t = line.trim();
+                // jump <id>
+                if (t === `jump ${id}` || t.startsWith(`jump ${id} `))
+                  return line.replace(`jump ${id}`, `jump ${newId}`);
+                // -> text : <id>
+                if (t.startsWith("->")) {
+                  const last = line.lastIndexOf(":");
+                  if (last !== -1 && line.slice(last + 1).trim() === id)
+                    return line.slice(0, last + 1) + " " + newId;
+                }
+                return line;
+              })
+              .join("\n"),
+          };
+        }
+        if (meta.startScene === id) meta = { ...meta, startScene: newId };
+        scenes = reordered;
+        // Keep activeScene in sync (caller side handles via setActiveScene).
+      }
+
+      return { ...p, scenes, meta };
+    });
+    if (newId !== id) setActiveScene(newId);
   };
   const deleteScene = (id: string) => {
     if (Object.keys(project.scenes).length <= 1) {
