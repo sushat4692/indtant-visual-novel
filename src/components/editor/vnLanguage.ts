@@ -178,6 +178,22 @@ const EFFECTS: Completion[] = [
   { label: "fadeout", type: "function" },
 ];
 
+// Inline text style tags (used inside say/narration text).
+const STYLE_TAGS: Completion[] = [
+  { label: "{red}", type: "keyword", detail: "赤" },
+  { label: "{blue}", type: "keyword", detail: "青" },
+  { label: "{yellow}", type: "keyword", detail: "黄" },
+  { label: "{green}", type: "keyword", detail: "緑" },
+  { label: "{cyan}", type: "keyword", detail: "シアン" },
+  { label: "{orange}", type: "keyword", detail: "オレンジ" },
+  { label: "{purple}", type: "keyword", detail: "紫" },
+  { label: "{gray}", type: "keyword", detail: "グレー" },
+  { label: "{white}", type: "keyword", detail: "白" },
+  { label: "{big}", type: "keyword", detail: "大きい文字 (1.3em)" },
+  { label: "{small}", type: "keyword", detail: "小さい文字 (0.75em)" },
+  { label: "{/}", type: "keyword", detail: "スタイル終了" },
+];
+
 function makeCompletionSource(data: CompletionData) {
   return (ctx: CompletionContext) => {
     const line = ctx.state.doc.lineAt(ctx.pos);
@@ -189,6 +205,17 @@ function makeCompletionSource(data: CompletionData) {
     // strip comments
     const commentIdx = textBefore.indexOf("#");
     if (commentIdx !== -1 && commentIdx < textBefore.length) return null;
+
+    // {style} tags inside say/narration text — triggered anywhere on the line
+    const braceMatch = textBefore.match(/\{([^}]*)$/);
+    if (braceMatch) {
+      const typed = braceMatch[1];
+      return {
+        from: ctx.pos - typed.length - 1, // include the opening {
+        options: STYLE_TAGS,
+        validFor: /^\{[^}]*$/,
+      };
+    }
 
     // @effect
     if (trimmed.startsWith("@")) {
