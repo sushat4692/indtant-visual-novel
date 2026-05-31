@@ -11,6 +11,7 @@ function makeProject(scenes: Record<string, string>, startScene = "start"): Proj
       title: "test",
       startScene,
       characters: { taro: { name: "太郎", sprite: "char_a" } },
+      orientation: "landscape",
     },
     scenes: Object.fromEntries(
       Object.entries(scenes).map(([id, script]) => [id, { id, name: id, script }]),

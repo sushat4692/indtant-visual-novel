@@ -18,6 +18,7 @@ function blankProject(): Project {
       title: "新しいノベル",
       startScene: "start",
       characters: {},
+      orientation: "landscape",
     },
     scenes: {
       start: { id: "start", name: "最初のシーン", script: ": ここから物語が始まる。\nend\n" },

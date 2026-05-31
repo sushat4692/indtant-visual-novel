@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { editorRouteApi } from "../router";
-import type { CharacterDef, Project } from "../engine/types";
+import type { CharacterDef, Orientation, Project } from "../engine/types";
+import { ORIENTATION_LABEL, resolveOrientation } from "../engine/orientation";
 import { getProject, saveProject } from "../storage/projectStore";
 import { listAssets } from "../storage/assetStore";
 import type { StoredAsset } from "../storage/db";
@@ -109,6 +110,8 @@ export function EditorPage() {
     mutate((p) => ({ ...p, meta: { ...p.meta, startScene: id } }));
   const setCharacters = (characters: Record<string, CharacterDef>) =>
     mutate((p) => ({ ...p, meta: { ...p.meta, characters } }));
+  const setOrientation = (orientation: Orientation) =>
+    mutate((p) => ({ ...p, meta: { ...p.meta, orientation } }));
   const onUploaded = (asset: StoredAsset) => {
     setUploads((u) => [...u, asset]);
     mutate((p) => ({ ...p, uploadedAssetIds: [...new Set([...p.uploadedAssetIds, asset.id])] }));
@@ -130,6 +133,10 @@ export function EditorPage() {
             value={project.name}
             onChange={(e) => mutate((p) => ({ ...p, name: e.target.value, meta: { ...p.meta, title: e.target.value } }))}
             className="rounded border border-transparent px-2 py-1 text-sm font-bold hover:border-slate-300 focus:border-sky-500 focus:outline-none"
+          />
+          <OrientationToggle
+            value={resolveOrientation(project.meta.orientation)}
+            onChange={setOrientation}
           />
         </div>
         <div className="flex gap-2">
@@ -191,6 +198,14 @@ export function EditorPage() {
  */
 function ScenePreview({ project, sceneId }: { project: Project; sceneId: string }) {
   const script = project.scenes[sceneId]?.script ?? "";
+  const savedOrientation = resolveOrientation(project.meta.orientation);
+  // Transient preview-only orientation override; does not change the saved value.
+  const [previewOrientation, setPreviewOrientation] = useState<Orientation>(savedOrientation);
+  // Follow the project's orientation whenever the author changes it.
+  useEffect(() => {
+    setPreviewOrientation(savedOrientation);
+  }, [savedOrientation]);
+
   // Build a project whose start scene is the one being previewed.
   const runtime = useMemo(() => {
     const previewProject: Project = { ...project, meta: { ...project.meta, startScene: sceneId } };
@@ -206,12 +221,22 @@ function ScenePreview({ project, sceneId }: { project: Project; sceneId: string 
 
   return (
     <div>
-      <StageView
-        project={project}
-        state={state}
-        onAdvance={() => setState({ ...runtime.next() })}
-        onSelect={(i) => setState({ ...runtime.select(i) })}
-      />
+      <div className="mb-2 flex items-center justify-between">
+        <OrientationToggle value={previewOrientation} onChange={setPreviewOrientation} />
+        {previewOrientation !== savedOrientation && (
+          <span className="text-xs text-amber-600">プレビュー確認用（保存値は{ORIENTATION_LABEL[savedOrientation]}）</span>
+        )}
+      </div>
+      {/* Fixed-height frame so the fit-box can letterbox portrait/landscape. */}
+      <div className="h-[55vh] w-full">
+        <StageView
+          project={project}
+          state={state}
+          orientation={previewOrientation}
+          onAdvance={() => setState({ ...runtime.next() })}
+          onSelect={(i) => setState({ ...runtime.select(i) })}
+        />
+      </div>
       <div className="mt-2 flex items-center gap-2">
         <button
           onClick={() => setState({ ...runtime.next() })}
@@ -223,6 +248,32 @@ function ScenePreview({ project, sceneId }: { project: Project; sceneId: string 
           {state.finished ? "終了" : state.choices ? "選択肢待ち" : "クリックで進む"}
         </span>
       </div>
+    </div>
+  );
+}
+
+/** A two-button segmented control for choosing landscape / portrait. */
+function OrientationToggle({
+  value,
+  onChange,
+}: {
+  value: Orientation;
+  onChange: (orientation: Orientation) => void;
+}) {
+  const orientations: Orientation[] = ["landscape", "portrait"];
+  return (
+    <div className="inline-flex overflow-hidden rounded-md border border-slate-300 text-xs">
+      {orientations.map((o) => (
+        <button
+          key={o}
+          onClick={() => onChange(o)}
+          className={`px-2 py-1 ${
+            value === o ? "bg-sky-600 text-white" : "bg-white text-slate-600 hover:bg-slate-100"
+          }`}
+        >
+          {ORIENTATION_LABEL[o]}
+        </button>
+      ))}
     </div>
   );
 }

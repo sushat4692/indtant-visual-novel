@@ -13,6 +13,7 @@ export function makeSampleProject(): Project {
         taro: { name: "太郎", sprite: "char_male_a" },
         hanako: { name: "花子", sprite: "char_female_a" },
       },
+      orientation: "landscape",
     },
     scenes: {
       start: {

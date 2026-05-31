@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { getAssetUrl } from "../storage/assetStore";
+import type { Orientation } from "../engine/types";
+import { DEFAULT_ORIENTATION } from "../engine/orientation";
 
 /**
  * Resolve an asset id to a URL (builtin data URL or uploaded object URL).
+ * Builtin backgrounds resolve to the variant matching `orientation`.
  * Returns null while loading or when the id is unknown/empty.
  */
-export function useAssetUrl(id: string | null): string | null {
+export function useAssetUrl(
+  id: string | null,
+  orientation: Orientation = DEFAULT_ORIENTATION,
+): string | null {
   const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -14,13 +20,13 @@ export function useAssetUrl(id: string | null): string | null {
       setUrl(null);
       return;
     }
-    getAssetUrl(id).then((resolved) => {
+    getAssetUrl(id, orientation).then((resolved) => {
       if (active) setUrl(resolved);
     });
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, orientation]);
 
   return url;
 }

@@ -3,6 +3,9 @@
 /** Character position on the stage. */
 export type Position = "left" | "center" | "right";
 
+/** Stage orientation: landscape (16:9, PC) or portrait (9:16, mobile). */
+export type Orientation = "landscape" | "portrait";
+
 /** A character definition (lives in project meta). */
 export interface CharacterDef {
   /** Display name shown in the text box. */
@@ -27,6 +30,11 @@ export interface ProjectMeta {
   startScene: string;
   /** speakerKey -> character definition. */
   characters: Record<string, CharacterDef>;
+  /**
+   * Fixed stage orientation chosen by the author. Older projects may lack this;
+   * readers should fall back to "landscape" via `meta.orientation ?? "landscape"`.
+   */
+  orientation: Orientation;
 }
 
 /** A full authored project. */
