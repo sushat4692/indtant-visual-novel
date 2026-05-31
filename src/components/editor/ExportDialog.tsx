@@ -48,7 +48,7 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
             <input type="radio" checked={mode === "editable"} onChange={() => setMode("editable")} className="mt-1" />
             <div>
               <div className="text-sm font-medium">編集可（平文）</div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-slate-600">
                 .vnproj.json を出力。インポートすると編集できます。
               </div>
             </div>
@@ -57,7 +57,7 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
             <input type="radio" checked={mode === "play"} onChange={() => setMode("play")} className="mt-1" />
             <div className="flex-1">
               <div className="text-sm font-medium">編集不可（パスワード暗号化）</div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-slate-600">
                 .vnplay.json を出力。再生専用で、編集はできません。
               </div>
               {mode === "play" && (
@@ -66,7 +66,7 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="再生用パスワード"
-                  className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800"
                 />
               )}
             </div>
@@ -76,12 +76,12 @@ export function ExportDialog({ project, onClose }: { project: Project; onClose: 
         {sizeWarning && <p className="mt-3 text-xs text-amber-600">{sizeWarning}</p>}
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
-        <p className="mt-3 text-xs text-slate-400">
+        <p className="mt-3 text-xs text-slate-500">
           ※ ブラウザ再生のため暗号化は完全な保護ではありません（パスワードを知る人には内容が渡ります）。
         </p>
 
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm hover:bg-slate-100">
+          <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">
             キャンセル
           </button>
           <button

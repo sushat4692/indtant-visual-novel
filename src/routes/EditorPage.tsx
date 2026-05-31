@@ -85,9 +85,7 @@ export function EditorPage() {
     }));
     setActiveScene(id);
   };
-  const renameScene = (id: string) => {
-    const name = prompt("シーン名", project.scenes[id].name);
-    if (name == null) return;
+  const renameScene = (id: string, name: string) => {
     mutate((p) => ({ ...p, scenes: { ...p.scenes, [id]: { ...p.scenes[id], name } } }));
   };
   const deleteScene = (id: string) => {
@@ -249,7 +247,7 @@ function ScenePreview({ project, sceneId, cursorLine }: { project: Project; scen
           次へ ▶
         </button>
         <button
-          onClick={() => setState({ ...runtime.seekToLine(cursorLine) })}
+          onClick={() => setState({ ...runtime.seekToLine(cursorLine, sceneId) })}
           className="rounded bg-sky-700 px-3 py-1 text-xs text-white hover:bg-sky-800"
           title={`${cursorLine}行目から再生`}
         >

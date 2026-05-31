@@ -112,7 +112,9 @@ export class Runtime {
    * fast-forwarding all preceding commands to reconstruct state (bg, characters,
    * bgm, etc.), then advance to the first stop point.
    */
-  seekToLine(lineNumber: number): RuntimeState {
+  seekToLine(lineNumber: number, sceneId?: string): RuntimeState {
+    // Reset to the target scene so jump-induced scene changes don't redirect the seek.
+    if (sceneId) this.sceneId = sceneId;
     const commands = this.commandsFor(this.sceneId);
     let targetIndex = 0;
     for (let i = 0; i < commands.length; i++) {
