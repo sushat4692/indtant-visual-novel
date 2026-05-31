@@ -149,10 +149,20 @@ export const vnHighlightStyle = EditorView.baseTheme({
 // Autocomplete
 // ---------------------------------------------------------------------------
 
+const CHAR_ANIMS: Completion[] = [
+  { label: "shake",  type: "function", detail: "震える" },
+  { label: "bounce", type: "function", detail: "バウンス" },
+  { label: "sway",   type: "function", detail: "揺れる" },
+  { label: "pulse",  type: "function", detail: "パルス" },
+  { label: "flash",  type: "function", detail: "フラッシュ" },
+  { label: "nod",    type: "function", detail: "うなずく" },
+];
+
 const COMMANDS: Completion[] = [
   { label: "bg", type: "keyword", detail: "背景を設定" },
   { label: "show", type: "keyword", detail: "キャラクターを表示" },
   { label: "hide", type: "keyword", detail: "キャラクターを非表示" },
+  { label: "anim", type: "keyword", detail: "キャラクターをアニメーション" },
   { label: "bgm", type: "keyword", detail: "BGMを再生" },
   { label: "se", type: "keyword", detail: "効果音を再生" },
   { label: "wait", type: "keyword", detail: "待機 (ミリ秒)" },
@@ -249,6 +259,20 @@ function makeCompletionSource(data: CompletionData) {
         options: COMMANDS,
         validFor: /^[\w@\->]*$/,
       };
+    }
+
+    // anim — 2nd token = character key
+    if (cmd === "anim" && parts.length === 2) {
+      return {
+        from: wordStart,
+        options: data.characterKeys.map((k) => ({ label: k, type: "variable" })),
+        validFor: /^\w*$/,
+      };
+    }
+
+    // anim <char> — 3rd token = animation name
+    if (cmd === "anim" && parts.length === 3) {
+      return { from: wordStart, options: CHAR_ANIMS, validFor: /^\w*$/ };
     }
 
     // show / hide — 2nd token = character key

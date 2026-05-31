@@ -1,6 +1,7 @@
 import type { CommandDef } from "../types";
 import { bgCommand } from "./bg";
 import { showCommand, hideCommand } from "./show";
+import { animCommand } from "./anim";
 import { effectCommand } from "./effect";
 import { bgmCommand, seCommand } from "./audio";
 import { waitCommand } from "./wait";
@@ -20,6 +21,7 @@ export const COMMAND_REGISTRY: CommandDef[] = [
   bgCommand,
   showCommand,
   hideCommand,
+  animCommand,
   effectCommand,
   bgmCommand,
   seCommand,

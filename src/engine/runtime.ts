@@ -13,6 +13,12 @@ function parseTransitionDuration(speed?: string): number {
 export interface VisibleChar {
   char: string;
   at: Position;
+  /** Incremented on each `show` — React key trick triggers entrance animation. */
+  enterToken: number;
+  /** Last one-shot animation name triggered by `anim` command. */
+  anim?: string;
+  /** Monotonic token to re-trigger the same animation. */
+  animToken?: number;
 }
 
 /** The current renderable state of the stage. */
@@ -184,13 +190,28 @@ export class Runtime {
         this.state.seToken++;
         return false;
       case "show": {
+        const existing = this.state.characters.find((c) => c.char === cmd.char);
         const others = this.state.characters.filter((c) => c.char !== cmd.char);
-        this.state.characters = [...others, { char: cmd.char, at: cmd.at }];
+        this.state.characters = [...others, {
+          char: cmd.char,
+          at: cmd.at,
+          enterToken: (existing?.enterToken ?? 0) + 1,
+          anim: undefined,
+          animToken: existing?.animToken ?? 0,
+        }];
         return false;
       }
       case "hide":
         this.state.characters = this.state.characters.filter((c) => c.char !== cmd.char);
         return false;
+      case "anim": {
+        this.state.characters = this.state.characters.map((c) =>
+          c.char === cmd.char
+            ? { ...c, anim: cmd.anim, animToken: (c.animToken ?? 0) + 1 }
+            : c
+        );
+        return false;
+      }
       case "effect":
         this.state.effect = cmd.effect;
         this.state.effectToken++;

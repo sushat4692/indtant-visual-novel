@@ -38,6 +38,58 @@
 }
 .vn-fadeout { animation: vn-fadeout-kf 0.6s ease-out forwards; }
 
+/* Character entrance animation (auto-applied on show via React key trick). */
+@keyframes vn-char-enter-kf {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.vn-char-enter { animation: vn-char-enter-kf 0.4s ease-out both; }
+
+/* Character one-shot animations (triggered by anim command). */
+@keyframes vn-char-shake-kf {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+}
+.vn-char-shake { animation: vn-char-shake-kf 0.5s ease-in-out; }
+
+@keyframes vn-char-bounce-kf {
+  0%,100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  70% { transform: translateY(-8px); }
+}
+.vn-char-bounce { animation: vn-char-bounce-kf 0.5s ease-out; }
+
+@keyframes vn-char-sway-kf {
+  0%,100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+.vn-char-sway { animation: vn-char-sway-kf 0.8s ease-in-out; transform-origin: bottom center; }
+
+@keyframes vn-char-pulse-kf {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.vn-char-pulse { animation: vn-char-pulse-kf 0.4s ease-in-out; }
+
+@keyframes vn-char-flash-kf {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(2.5); }
+  100% { filter: brightness(1); }
+}
+.vn-char-flash { animation: vn-char-flash-kf 0.4s ease-out; }
+
+@keyframes vn-char-nod-kf {
+  0%,100% { transform: translateY(0); }
+  30% { transform: translateY(-8px); }
+  60% { transform: translateY(4px); }
+  80% { transform: translateY(-4px); }
+}
+.vn-char-nod { animation: vn-char-nod-kf 0.4s ease-in-out; }
+
 /* Scene-entry transitions (triggered on jump / choice with optional transition). */
 @keyframes vn-trans-fade-kf {
   from { opacity: 0; }

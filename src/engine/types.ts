@@ -86,7 +86,8 @@ export type Command =
   | { kind: "wait"; line: number; ms: number }
   | { kind: "choice"; line: number; options: ChoiceOption[] }
   | { kind: "jump"; line: number; target: string; transition?: string; speed?: string }
-  | { kind: "end"; line: number; text?: string };
+  | { kind: "end"; line: number; text?: string }
+  | { kind: "anim"; line: number; char: string; anim: string };
 
 export type CommandKind = Command["kind"];
 
