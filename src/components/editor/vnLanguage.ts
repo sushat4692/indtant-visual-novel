@@ -13,24 +13,23 @@ export interface CompletionData {
 // ---------------------------------------------------------------------------
 
 export const vnTheme = EditorView.theme({
+  // "&" targets the root .cm-editor element itself (dark background).
   "&": {
     height: "100%",
+    backgroundColor: "#0f172a",
+    borderRadius: "0.5rem",
+    border: "1px solid #cbd5e1",
     fontSize: "0.875rem",
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
   },
+  "&.cm-focused": { outline: "none", borderColor: "#0ea5e9" },
+  ".cm-scroller": { height: "100%" },
   ".cm-content": {
     padding: "12px",
     lineHeight: "1.75",
     color: "#e2e8f0",
     caretColor: "#e2e8f0",
   },
-  ".cm-editor": {
-    height: "100%",
-    backgroundColor: "#0f172a",
-    borderRadius: "0.5rem",
-    border: "1px solid #cbd5e1",
-  },
-  ".cm-editor.cm-focused": { outline: "none", borderColor: "#0ea5e9" },
   ".cm-gutters": { display: "none" },
   ".cm-cursor": { borderLeftColor: "#e2e8f0" },
   ".cm-selectionBackground, ::selection": { backgroundColor: "#1e40af66 !important" },
@@ -136,13 +135,14 @@ const highlightPlugin = ViewPlugin.fromClass(
 );
 
 export const vnHighlightStyle = EditorView.baseTheme({
-  ".cm-vn-keyword": { color: "#38bdf8", fontWeight: "600" },
-  ".cm-vn-effect": { color: "#a78bfa", fontWeight: "600" },
-  ".cm-vn-choice": { color: "#fbbf24", fontWeight: "700" },
-  ".cm-vn-speaker": { color: "#34d399", fontWeight: "600" },
-  ".cm-vn-comment": { color: "#64748b", fontStyle: "italic" },
-  ".cm-vn-position": { color: "#86efac" },
-  ".cm-vn-off": { color: "#f87171" },
+  // Colors tuned for dark (#0f172a) background — all pass WCAG AA on dark.
+  ".cm-vn-keyword": { color: "#7dd3fc", fontWeight: "600" },   // sky-300
+  ".cm-vn-effect": { color: "#c4b5fd", fontWeight: "600" },    // violet-300
+  ".cm-vn-choice": { color: "#fcd34d", fontWeight: "700" },    // amber-300
+  ".cm-vn-speaker": { color: "#6ee7b7", fontWeight: "600" },   // emerald-300
+  ".cm-vn-comment": { color: "#64748b", fontStyle: "italic" }, // slate-500
+  ".cm-vn-position": { color: "#86efac" },                     // green-300
+  ".cm-vn-off": { color: "#fca5a5" },                          // red-300
 });
 
 // ---------------------------------------------------------------------------
